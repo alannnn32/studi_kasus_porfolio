@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_strings.dart';
 import '../models/project.dart';
 import '../theme/app_colors.dart';
 import 'project_card.dart';
@@ -60,15 +61,16 @@ class _ProjectPagerState extends State<ProjectPager> {
   Widget build(BuildContext context) {
     final list = widget.projects;
     if (list.isEmpty) {
-      return const SectionCard(
+      return SectionCard(
         child: Column(
           children: [
-            Icon(Icons.folder_open, size: 44, color: AppColors.textMuted),
-            SizedBox(height: 8),
-            Text('Belum ada karya',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('Tambahkan karya baru atau ubah filter.',
-                style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
+            const Icon(Icons.folder_open, size: 44, color: AppColors.textMuted),
+            const SizedBox(height: 8),
+            Text(context.tr('empty_title'),
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(context.tr('empty_desc'),
+                style: const TextStyle(
+                    fontSize: 12, color: AppColors.textMuted)),
           ],
         ),
       );
@@ -102,7 +104,7 @@ class _ProjectPagerState extends State<ProjectPager> {
               width: active ? 22 : 8,
               height: 8,
               decoration: BoxDecoration(
-                color: active ? AppColors.primary : Colors.grey.shade300,
+                color: active ? AppColors.primary : Colors.grey.shade400,
                 borderRadius: BorderRadius.circular(4),
               ),
             );
@@ -116,18 +118,19 @@ class _ProjectPagerState extends State<ProjectPager> {
               OutlinedButton.icon(
                 onPressed: _current > 0 ? () => _go(false) : null,
                 icon: const Icon(Icons.arrow_back, size: 16),
-                label: const Text('Sebelumnya'),
+                label: Text(context.tr('prev')),
               ),
               FilledButton(
                 onPressed: _current < list.length - 1 ? () => _go(true) : null,
-                style:
-                    FilledButton.styleFrom(backgroundColor: AppColors.primary),
-                child: const Row(
+                style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white),
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Berikutnya'),
-                    SizedBox(width: 6),
-                    Icon(Icons.arrow_forward, size: 16),
+                    Text(context.tr('next')),
+                    const SizedBox(width: 6),
+                    const Icon(Icons.arrow_forward, size: 16),
                   ],
                 ),
               ),

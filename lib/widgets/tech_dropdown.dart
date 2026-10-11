@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/portfolio_data.dart';
+import '../l10n/app_strings.dart';
 import '../theme/app_colors.dart';
 import 'section_card.dart';
 
@@ -20,13 +21,14 @@ class TechDropdown extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Teknologi',
-              style: TextStyle(fontSize: 11, color: AppColors.textMuted)),
+          Text(context.tr('tech_label'),
+              style:
+                  const TextStyle(fontSize: 11, color: AppColors.textMuted)),
           DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               isExpanded: true,
               value: selected,
-              hint: const Text('Pilih teknologi yang dikuasai'),
+              hint: Text(context.tr('tech_hint')),
               icon: const Icon(Icons.keyboard_arrow_down),
               items: technologies.map((t) {
                 return DropdownMenuItem<String>(
@@ -51,12 +53,14 @@ class TechDropdown extends StatelessWidget {
                 const Icon(Icons.check_circle,
                     size: 16, color: AppColors.primary),
                 const SizedBox(width: 6),
-                Text(
-                  'Teknologi dipilih: $selected',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
+                Expanded(
+                  child: Text(
+                    context.tr('tech_selected', {'t': selected!}),
+                    style: const TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],

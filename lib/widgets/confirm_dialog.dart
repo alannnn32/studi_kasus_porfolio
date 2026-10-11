@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_strings.dart';
+
 Future<bool> confirmDialog(
   BuildContext context, {
   required String title,
   required String message,
-  String confirmText = 'Hapus',
+  String? confirmText,
 }) async {
   final result = await showDialog<bool>(
     context: context,
@@ -14,12 +16,12 @@ Future<bool> confirmDialog(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),
-          child: const Text('Batal'),
+          child: Text(ctx.tr('cancel')),
         ),
         FilledButton(
           style: FilledButton.styleFrom(backgroundColor: Colors.red),
           onPressed: () => Navigator.pop(ctx, true),
-          child: Text(confirmText),
+          child: Text(confirmText ?? ctx.tr('delete')),
         ),
       ],
     ),

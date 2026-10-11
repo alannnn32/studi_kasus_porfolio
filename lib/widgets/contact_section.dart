@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/portfolio_data.dart';
+import '../l10n/app_strings.dart';
 import '../theme/app_colors.dart';
 import 'section_card.dart';
 
@@ -13,12 +14,13 @@ class ContactSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.share, color: AppColors.primary, size: 20),
-              SizedBox(width: 8),
-              Text('Kontak & Sosial Media',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              const Icon(Icons.share, color: AppColors.primary, size: 20),
+              const SizedBox(width: 8),
+              Text(context.tr('contact_title'),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 15)),
             ],
           ),
           const SizedBox(height: 10),
@@ -27,9 +29,9 @@ class ContactSection extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFF8FAFF),
+                color: AppColors.soft(context),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE5E9F5)),
+                border: Border.all(color: AppColors.border(context)),
               ),
               child: Row(
                 children: [

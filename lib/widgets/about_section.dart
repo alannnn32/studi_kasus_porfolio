@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/portfolio_data.dart';
+import '../l10n/app_strings.dart';
 import '../theme/app_colors.dart';
 import 'section_card.dart';
 
@@ -13,19 +14,19 @@ class AboutSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.person, color: AppColors.primary, size: 20),
-              SizedBox(width: 8),
-              Text('Tentang Saya',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              const Icon(Icons.person, color: AppColors.primary, size: 20),
+              const SizedBox(width: 8),
+              Text(context.tr('about_title'),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 15)),
             ],
           ),
           const SizedBox(height: 8),
-          const Text(
-            ProfileData.about,
-            style: TextStyle(
-                fontSize: 12.5, height: 1.45, color: AppColors.textDark),
+          Text(
+            context.tr('about_text'),
+            style: const TextStyle(fontSize: 12.5, height: 1.45),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -35,7 +36,7 @@ class AboutSection extends StatelessWidget {
               return Chip(
                 avatar: Icon(techIcons[s], size: 16, color: AppColors.primary),
                 label: Text(s, style: const TextStyle(fontSize: 12)),
-                backgroundColor: AppColors.primary.withAlpha(20),
+                backgroundColor: AppColors.primary.withAlpha(30),
                 side: BorderSide.none,
                 shape: const StadiumBorder(),
                 visualDensity: VisualDensity.compact,

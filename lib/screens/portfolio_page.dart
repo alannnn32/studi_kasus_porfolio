@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../controllers/portfolio_controller.dart';
 import '../data/portfolio_data.dart';
+import '../l10n/app_strings.dart';
 import '../models/project.dart';
+import '../services/api_service.dart';
 import '../theme/app_colors.dart';
 import '../widgets/confirm_dialog.dart';
+import '../widgets/load_status.dart';
 import '../widgets/page_scroll.dart';
 import '../widgets/project_pager.dart';
 import '../widgets/section_card.dart';
@@ -18,7 +21,8 @@ class PortfolioPage extends StatefulWidget {
 }
 
 class _PortfolioPageState extends State<PortfolioPage> {
-  static const _all = 'Semua';
+  // Nilai internal "semua" (tidak ditampilkan; label diterjemahkan).
+  static const _all = '*';
   String _category = _all;
   String _tech = _all;
 
@@ -34,19 +38,28 @@ class _PortfolioPageState extends State<PortfolioPage> {
   Future<void> _delete(Project p) async {
     final ok = await confirmDialog(
       context,
-      title: 'Hapus Portofolio',
-      message: 'Yakin ingin menghapus "${p.name}"?',
+      title: context.tr('delete_title'),
+      message: context.tr('delete_confirm', {'name': p.name}),
     );
-    if (!ok) return;
-    await PortfolioController.instance.remove(p.id!);
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Portofolio berhasil dihapus')),
-    );
+    if (!ok || !mounted) return;
+    try {
+      await PortfolioController.instance.remove(p.id!);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.tr('deleted_ok'))),
+      );
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(context.tr('delete_failed', {'msg': e.message}))),
+      );
+    }
   }
 
   Widget _dropdown(String label, String value, List<String> options,
-      ValueChanged<String> onChanged) {
+      ValueChanged<String> onChanged,
+      {String Function(String)? labelOf}) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +71,15 @@ class _PortfolioPageState extends State<PortfolioPage> {
             isExpanded: true,
             value: value,
             items: [_all, ...options]
-                .map((o) => DropdownMenuItem(value: o, child: Text(o)))
+                .map((o) => DropdownMenuItem(
+                      value: o,
+                      child: Text(
+                        o == _all
+                            ? context.tr('all')
+                            : (labelOf?.call(o) ?? o),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ))
                 .toList(),
             onChanged: (v) => onChanged(v!),
           ),
@@ -80,10 +101,11 @@ class _PortfolioPageState extends State<PortfolioPage> {
             SectionCard(
               child: Row(
                 children: [
-                  _dropdown('Kategori', _category, categories,
-                      (v) => setState(() => _category = v)),
+                  _dropdown(context.tr('filter_category'), _category,
+                      categories, (v) => setState(() => _category = v),
+                      labelOf: context.catName),
                   const SizedBox(width: 16),
-                  _dropdown('Teknologi', _tech, technologies,
+                  _dropdown(context.tr('filter_tech'), _tech, technologies,
                       (v) => setState(() => _tech = v)),
                 ],
               ),
@@ -94,21 +116,23 @@ class _PortfolioPageState extends State<PortfolioPage> {
                 children: [
                   const Icon(Icons.work, color: AppColors.primary, size: 22),
                   const SizedBox(width: 8),
-                  const Text('My Projects',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(context.tr('my_projects'),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
                   const Spacer(),
-                  Text('${shown.length} karya',
+                  Text(context.tr('works_count', {'n': '${shown.length}'}),
                       style: const TextStyle(
                           fontSize: 12, color: AppColors.textMuted)),
                 ],
               ),
             ),
             const SizedBox(height: 6),
-            ProjectPager(
-              projects: shown,
-              onEdit: (p) => openProjectForm(context, project: p),
-              onDelete: _delete,
+            LoadStatus(
+              child: ProjectPager(
+                projects: shown,
+                onEdit: (p) => openProjectForm(context, project: p),
+                onDelete: _delete,
+              ),
             ),
             const SizedBox(height: 70), // ruang untuk tombol tambah
           ],

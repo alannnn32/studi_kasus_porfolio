@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/portfolio_data.dart';
+import '../l10n/app_strings.dart';
 import '../theme/app_colors.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -8,6 +9,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final prodi = context.tr('my_prodi_name');
     return ClipPath(
       clipper: _WaveClipper(),
       child: Container(
@@ -54,14 +56,16 @@ class ProfileHeader extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 2),
-                      const Text(
-                        'Mahasiswa ${ProfileData.prodi}',
-                        style: TextStyle(color: Colors.white70, fontSize: 13),
+                      Text(
+                        context.tr('student_of', {'prodi': prodi}),
+                        style: const TextStyle(
+                            color: Colors.white70, fontSize: 13),
                       ),
                       const SizedBox(height: 8),
-                      _infoRow(Icons.badge_outlined, 'NIM : ${ProfileData.nim}'),
+                      _infoRow(Icons.badge_outlined,
+                          '${context.tr('nim')} : ${ProfileData.nim}'),
                       _infoRow(Icons.account_balance_outlined,
-                          'Program Studi : ${ProfileData.prodi}'),
+                          '${context.tr('study_program')} : $prodi'),
                       _infoRow(Icons.school_outlined, ProfileData.campus),
                     ],
                   ),
@@ -69,9 +73,9 @@ class ProfileHeader extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 14),
-            const Text(
-              ProfileData.tagline,
-              style: TextStyle(
+            Text(
+              context.tr('tagline'),
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 15,
                 fontStyle: FontStyle.italic,

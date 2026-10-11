@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/portfolio_data.dart';
+import '../l10n/app_strings.dart';
 import '../theme/app_colors.dart';
 import '../widgets/gradient_app_bar.dart';
 import 'beranda_page.dart';
@@ -20,12 +21,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _tab = 0;
 
-  static const _titles = [
-    ['My Portfolio', 'Build • Learn • Create'],
-    ['Profil Saya', 'Identitas & kontak'],
-    ['Portofolio / Karya', 'Kelola karya (CRUD)'],
-    ['Tentang POLIJE', 'Politeknik Negeri Jember'],
-    ['Pengaturan', 'Data & aplikasi'],
+  // Kunci terjemahan judul & subjudul AppBar tiap tab.
+  static const _titleKeys = [
+    ['t_home_title', 't_home_sub'],
+    ['t_profile_title', 't_profile_sub'],
+    ['t_portfolio_title', 't_portfolio_sub'],
+    ['t_polije_title', 't_polije_sub'],
+    ['t_settings_title', 't_settings_sub'],
   ];
 
   void _goTo(int i) => setState(() => _tab = i);
@@ -43,8 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: GradientAppBar(
-        title: _titles[_tab][0],
-        subtitle: _titles[_tab][1],
+        title: context.tr(_titleKeys[_tab][0]),
+        subtitle: context.tr(_titleKeys[_tab][1]),
       ),
       drawer: _buildDrawer(),
       body: IndexedStack(index: _tab, children: pages),
@@ -54,20 +56,26 @@ class _HomeScreenState extends State<HomeScreen> {
               foregroundColor: Colors.white,
               onPressed: _add,
               icon: const Icon(Icons.add),
-              label: const Text('Tambah'),
+              label: Text(context.tr('fab_add')),
             )
           : null,
       bottomNavigationBar: NavigationBar(
-        backgroundColor: Colors.white,
-        indicatorColor: AppColors.primary.withAlpha(30),
+        backgroundColor: AppColors.card(context),
+        indicatorColor: AppColors.primary.withAlpha(40),
         selectedIndex: _tab,
         onDestinationSelected: _goTo,
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Beranda'),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
-          NavigationDestination(icon: Icon(Icons.work), label: 'Portofolio'),
-          NavigationDestination(icon: Icon(Icons.school), label: 'POLIJE'),
-          NavigationDestination(icon: Icon(Icons.settings), label: 'Pengaturan'),
+        destinations: [
+          NavigationDestination(
+              icon: const Icon(Icons.home), label: context.tr('nav_home')),
+          NavigationDestination(
+              icon: const Icon(Icons.person), label: context.tr('nav_profile')),
+          NavigationDestination(
+              icon: const Icon(Icons.work), label: context.tr('nav_portfolio')),
+          NavigationDestination(
+              icon: const Icon(Icons.school), label: context.tr('nav_polije')),
+          NavigationDestination(
+              icon: const Icon(Icons.settings),
+              label: context.tr('nav_settings')),
         ],
       ),
     );
@@ -80,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: Icon(icon, color: AppColors.primary),
         title: Text(label),
         selected: selected,
-        selectedTileColor: AppColors.primary.withAlpha(20),
+        selectedTileColor: AppColors.primary.withAlpha(30),
         onTap: () {
           Navigator.pop(context); // tutup drawer
           onTap();
@@ -99,38 +107,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 const BoxDecoration(gradient: AppColors.headerGradient),
             child: Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 28,
                   backgroundColor: Colors.white,
-                  backgroundImage: const AssetImage(ProfileData.photo),
-                  onBackgroundImageError: (_, __) {},
+                  backgroundImage: AssetImage(ProfileData.photo),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(ProfileData.name,
+                      const Text(ProfileData.name,
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 16)),
-                      Text('NIM: ${ProfileData.nim}',
-                          style: TextStyle(color: Colors.white70, fontSize: 12)),
+                      Text('${context.tr('nim')}: ${ProfileData.nim}',
+                          style: const TextStyle(
+                              color: Colors.white70, fontSize: 12)),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          item(Icons.home, 'Beranda', () => _goTo(0), selected: _tab == 0),
-          item(Icons.person, 'Profil Saya', () => _goTo(1), selected: _tab == 1),
-          item(Icons.work, 'Portofolio / Karya', () => _goTo(2),
+          item(Icons.home, context.tr('drawer_home'), () => _goTo(0),
+              selected: _tab == 0),
+          item(Icons.person, context.tr('drawer_profile'), () => _goTo(1),
+              selected: _tab == 1),
+          item(Icons.work, context.tr('drawer_portfolio'), () => _goTo(2),
               selected: _tab == 2),
-          item(Icons.add_circle, 'Tambah Portofolio', _add),
-          item(Icons.school, 'Tentang POLIJE', () => _goTo(3),
+          item(Icons.add_circle, context.tr('drawer_add'), _add),
+          item(Icons.school, context.tr('drawer_polije'), () => _goTo(3),
               selected: _tab == 3),
-          item(Icons.settings, 'Pengaturan', () => _goTo(4),
+          item(Icons.settings, context.tr('drawer_settings'), () => _goTo(4),
               selected: _tab == 4),
         ],
       ),

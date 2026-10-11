@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../controllers/portfolio_controller.dart';
+import '../l10n/app_strings.dart';
 import '../theme/app_colors.dart';
 import '../widgets/info_banner.dart';
+import '../widgets/load_status.dart';
 import '../widgets/page_scroll.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/project_pager.dart';
@@ -34,34 +36,37 @@ class BerandaPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
-                  _stat(Icons.folder, '${items.length}', 'Karya'),
-                  _stat(Icons.category, '${cats.length}', 'Kategori'),
-                  _stat(Icons.layers, '${techs.length}', 'Teknologi'),
+                  _stat(Icons.folder, '${items.length}',
+                      context.tr('stat_works')),
+                  _stat(Icons.category, '${cats.length}',
+                      context.tr('stat_categories')),
+                  _stat(Icons.layers, '${techs.length}',
+                      context.tr('stat_tech')),
                 ],
               ),
             ),
             const SizedBox(height: 8),
-            const InfoBanner(slides: [
-              BannerSlide(Icons.waving_hand, 'Selamat Datang!',
-                  'Ini portofolio digital saya: profil, karya, dan informasi kampus.'),
-              BannerSlide(Icons.folder_special, 'Karya Saya',
-                  'Lihat, tambah, ubah, dan hapus karya di menu Portofolio.'),
-              BannerSlide(Icons.school, 'Kenali POLIJE',
-                  'Politeknik Negeri Jember: kampus vokasi di Jember, Jawa Timur.'),
+            InfoBanner(slides: [
+              BannerSlide(Icons.waving_hand, context.tr('banner1_t'),
+                  context.tr('banner1_d')),
+              BannerSlide(Icons.folder_special, context.tr('banner2_t'),
+                  context.tr('banner2_d')),
+              BannerSlide(Icons.school, context.tr('banner3_t'),
+                  context.tr('banner3_d')),
             ]),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Row(
                 children: [
-                  Icon(Icons.work, color: AppColors.primary, size: 22),
-                  SizedBox(width: 8),
-                  Text('Karya Terbaru',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Icon(Icons.work, color: AppColors.primary, size: 22),
+                  const SizedBox(width: 8),
+                  Text(context.tr('latest_works'),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
-            ProjectPager(projects: items.take(5).toList()),
+            LoadStatus(child: ProjectPager(projects: items.take(5).toList())),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -70,17 +75,18 @@ class BerandaPage extends StatelessWidget {
                     child: OutlinedButton.icon(
                       onPressed: onAdd,
                       icon: const Icon(Icons.add),
-                      label: const Text('Tambah Karya'),
+                      label: Text(context.tr('btn_add_work')),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: FilledButton.icon(
                       style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary),
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white),
                       onPressed: () => onNavigate(3),
                       icon: const Icon(Icons.school),
-                      label: const Text('Tentang POLIJE'),
+                      label: Text(context.tr('btn_about_polije')),
                     ),
                   ),
                 ],
@@ -105,6 +111,7 @@ class BerandaPage extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Text(label,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                     fontSize: 11, color: AppColors.textMuted)),
           ],
